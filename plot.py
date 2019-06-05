@@ -16,12 +16,14 @@ def get_size_vmaf(vid,res,crf,maxdur,enc,cbrcapped):
         with open(statdir + '/vid_opts.json') as f:
             vid_opts = json.load(f)
             # add sanity checks
-            if cbrcapped == 'cbr' in vid_opts:
-                if not 'cst_bitrate':
-                    print("ERROR")
+            if cbrcapped == 'cbr': # make sure coding was cbr
+                if not 'cst_bitrate' in vid_opts:
+                    print(vid_opts)
+                    print("ERROR CBR")
                     return None
-                if not 'meanrate' in vid_opts:
-                    print("ERROR")
+            else:
+                if not 'meanrate' in vid_opts: # make sure coding was capped crf
+                    print("ERROR MEANRATE")
                     return None
         with open(statdir + '/video_statistics.json') as f:
             vid_stats = json.load(f)
