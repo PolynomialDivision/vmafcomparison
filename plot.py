@@ -13,6 +13,16 @@ def get_size_vmaf(vid,res,crf,maxdur,enc,cbrcapped):
     if len(statdir) > 0:
         statdir = statdir[0]
         vmaf = np.mean(pd.read_csv(statdir + '/psnr_ssim_vmaf.csv')['vmaf'])
+        with open(statdir + '/vid_opts.json') as f:
+            vid_opts = json.load(f)
+            # add sanity checks
+            if cbrcapped == 'cbr' in vid_opts:
+                if not 'cst_bitrate':
+                    print("ERROR")
+                    return None
+                if not 'meanrate' in vid_opts:
+                    print("ERROR")
+                    return None
         with open(statdir + '/video_statistics.json') as f:
             vid_stats = json.load(f)
         
