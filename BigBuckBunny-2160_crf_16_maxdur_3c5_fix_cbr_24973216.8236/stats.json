@@ -1,0 +1,28 @@
+{
+    "container": "fginet/docker-video-encoding:latest",
+    "container_runtime": 29670.936927861534,
+    "docker_cmd": "docker run --rm --user 1002:1002 -v /mnt/disk/don/4k:/videos -v /mnt/disk/tmp/1559671712.megalomania14x1.BigBuckBunny-2160_crf_16_maxdur_3c5_fix_cbr_24973216.8236_job1:/tmpdir -v /mnt/disk/nhainke/ENCODINGS/results/1559671712.megalomania14x1.BigBuckBunny-2160_crf_16_maxdur_3c5_fix_cbr_24973216.8236_job1:/results fginet/docker-video-encoding:latest BigBuckBunny-2160.avi 16 3.5 3.5 3.5 x264 24973216.823637556",
+    "id": "megalomania14x1",
+    "job": "BigBuckBunny-2160_crf_16_maxdur_3c5_fix_cbr_24973216.8236_job1.txt",
+    "job.path": "/mnt/disk/nhainke/ENCODINGS/jobs/01_running/megalomania14x1.BigBuckBunny-2160_crf_16_maxdur_3c5_fix_cbr_24973216.8236_job1.txt",
+    "job_dict": {
+        "crf": 16,
+        "cst_bitrate": 24973216.823637556,
+        "encoder": "x264",
+        "max_length": 3.5,
+        "min_length": 3.5,
+        "target_seg_length": 3.5,
+        "video": "BigBuckBunny-2160.avi"
+    },
+    "keep_tmp": false,
+    "processor": null,
+    "resultdir": "/mnt/disk/nhainke/ENCODINGS/results/",
+    "sftp_host": "octopus23.rz.tu-ilmenau.de",
+    "sftp_port": "2222",
+    "sftp_target_dir": "/share/results/",
+    "sftp_user": "variablesegdurs",
+    "tmpdir": "/mnt/disk/tmp/",
+    "tmpsize": 1979502753,
+    "ts": 1559671712,
+    "viddir": "/mnt/disk/don/4k/"
+}
