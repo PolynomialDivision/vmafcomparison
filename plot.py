@@ -28,7 +28,7 @@ def get_size_vmaf(vid,res,crf,maxdur,enc,cbrcapped):
         with open(statdir + '/video_statistics.json') as f:
             vid_stats = json.load(f)
         
-        return float(vid_stats['size_total'])/(1000000*8), vmaf
+        return float(vid_stats['size_total'])/(1000000*8), vmaf, vid_stats['bitrates'], vid_opts['cst_bitrate']
 
 var_vmaf_4 =  get_size_vmaf('BigBuckBunny',2160,16,'4c0','var','cbr')[1]
 var_vmaf_10 =  get_size_vmaf('BigBuckBunny',2160,16,'10c0','var','cbr')[1]
@@ -107,7 +107,7 @@ ax.set_xlabel('Video')
 ax.set_ylabel('VMAF')
 ax.legend(loc='center')
 plt.tight_layout() 
-plt.savefig('vmaf.pdf')
+plt.savefig('vmaf.png')
 plt.close()
 
 ax = plt.gca()
@@ -117,7 +117,7 @@ ax.set_xlabel('Video')
 ax.set_ylabel(r'$vmaf_{var} - vmaf_{x}$')
 ax.legend(loc='center')
 plt.tight_layout() 
-plt.savefig('vmaf_diff.pdf')
+plt.savefig('vmaf_diff.png')
 plt.close()
 
 ax = plt.gca()
@@ -127,7 +127,7 @@ ax.set_xlabel('Video')
 ax.set_ylabel('Filesize (MB)')
 ax.legend(loc='center')
 plt.tight_layout() 
-plt.savefig('sizes.pdf')
+plt.savefig('sizes.png')
 plt.close()
 
 ax = plt.gca()
@@ -137,5 +137,23 @@ ax.set_xlabel('Video')
 ax.set_ylabel(r'$\frac{size_{var} - size_{x}}{size_{x}}$')
 ax.legend(loc='center')
 plt.tight_layout() 
-plt.savefig('sizes_diff.pdf')
+plt.savefig('sizes_diff.png')
 plt.close()
+
+ax = plt.gca()
+_,_,bitrates,targetbitrate = get_size_vmaf('BigBuckBunny',2160,16,'4c0','fix','cbr')
+bitrates = np.array(bitrates)/1000000
+
+# calculate in MBit/s
+y = pd.Series(bitrates).rolling(24).mean()
+
+targetbitrate /= 1000000
+
+ax.plot(y)
+ax.axhline(y=targetbitrate, color='g', linestyle='--')
+ax.text(0, targetbitrate, 'Target Bitrate', color='g', ha='left', va='top')
+ax.axhline(y=targetbitrate*1.25, color='r', linestyle='--')
+ax.text(0, targetbitrate*1.25, 'MaxRate', color='r', ha='left', va='bottom')
+ax.set_xlabel('Bitrates')
+ax.set_ylabel('Bitrate (Mbit/s)')
+plt.savefig('bitrate_plots.png')
