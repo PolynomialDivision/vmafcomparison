@@ -16,11 +16,10 @@ def get_size_vmaf(vid,res,crf,maxdur,enc,cbrcapped):
         with open(statdir + '/video_statistics.json') as f:
             vid_stats = json.load(f)
         
-        return vid_stats['size_total'], vmaf
+        return float(vid_stats['size_total'])/(1000000*8), vmaf
 
 var_vmaf_4 =  get_size_vmaf('BigBuckBunny',2160,16,'4c0','var','cbr')[1]
 var_vmaf_10 =  get_size_vmaf('BigBuckBunny',2160,16,'10c0','var','cbr')[1]
-
 
 Bunny_vmaf = {
     4 : {
@@ -48,16 +47,39 @@ Bunny_vmaf_diff = {
     }
 }
 
+
 Bunny_sizes = {
     4 : {
         'VAR' : get_size_vmaf('BigBuckBunny',2160,16,'4c0','var','cbr')[0], \
-        'NA' : get_size_vmaf('BigBuckBunny',2160,16,'3c0','fix','cbr')[0], \
+        'NA' : get_size_vmaf('BigBuckBunny',2160,16,'3c0','fix','cbr')[0] , \
         'EM' : get_size_vmaf('BigBuckBunny',2160,16,'4c0','fix','cbr')[0]
     },
     10 : {
         'VAR' : get_size_vmaf('BigBuckBunny',2160,16,'10c0','var','cbr')[0], \
         'NA' : get_size_vmaf('BigBuckBunny',2160,16,'4c5','fix','cbr')[0], \
         'EM' : get_size_vmaf('BigBuckBunny',2160,16,'10c0','fix','cbr')[0]
+    }
+}
+
+var_filesize_4 =  get_size_vmaf('BigBuckBunny',2160,16,'4c0','var','cbr')[0]
+var_filesize_10 =  get_size_vmaf('BigBuckBunny',2160,16,'10c0','var','cbr')[0]
+
+Bunny_sizes_diff = {
+    4 : {
+        'VAR' : (get_size_vmaf('BigBuckBunny',2160,16,'4c0','var','cbr')[0] - var_filesize_4) \
+             / get_size_vmaf('BigBuckBunny',2160,16,'4c0','var','cbr')[0], \
+        'NA' : (get_size_vmaf('BigBuckBunny',2160,16,'3c0','fix','cbr')[0] - var_filesize_4) \
+            / get_size_vmaf('BigBuckBunny',2160,16,'3c0','fix','cbr')[0], \
+        'EM' : (get_size_vmaf('BigBuckBunny',2160,16,'4c0','fix','cbr')[0] - var_filesize_4) \
+            / get_size_vmaf('BigBuckBunny',2160,16,'4c0','fix','cbr')[0]
+    },
+    10 : {
+        'VAR' : (get_size_vmaf('BigBuckBunny',2160,16,'10c0','var','cbr')[0] - var_filesize_10) \
+            / get_size_vmaf('BigBuckBunny',2160,16,'10c0','var','cbr')[0], \
+        'NA' : (get_size_vmaf('BigBuckBunny',2160,16,'4c5','fix','cbr')[0] - var_filesize_10) \
+            / get_size_vmaf('BigBuckBunny',2160,16,'4c5','fix','cbr')[0], \
+        'EM' : (get_size_vmaf('BigBuckBunny',2160,16,'10c0','fix','cbr')[0] - var_filesize_10) \
+            /   get_size_vmaf('BigBuckBunny',2160,16,'10c0','fix','cbr')[0]
     }
 }
 
@@ -90,8 +112,18 @@ ax = plt.gca()
 df_results = pd.DataFrame.from_dict(Bunny_sizes, orient='index')
 boxplot_results = df_results.plot.bar(ax=ax,rot=0)
 ax.set_xlabel('Video')
-ax.set_ylabel('Filesize')
+ax.set_ylabel('Filesize (MBit/s)')
 ax.legend(loc='center')
 plt.tight_layout() 
 plt.savefig('sizes.pdf')
+plt.close()
+
+ax = plt.gca()
+df_results = pd.DataFrame.from_dict(Bunny_sizes_diff, orient='index')
+boxplot_results = df_results.plot.bar(ax=ax,rot=0)
+ax.set_xlabel('Video')
+ax.set_ylabel(r'$\frac{vmaf_{var} - vmaf_{x}}{vmaf_{x}}$')
+ax.legend(loc='center')
+plt.tight_layout() 
+plt.savefig('sizes_diff.pdf')
 plt.close()
