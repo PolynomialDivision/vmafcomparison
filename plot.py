@@ -12,7 +12,7 @@ def get_size_vmaf(vid,res,crf,maxdur,enc,cbrcapped):
     statdir = glob.glob(searchfor)
     if len(statdir) > 0:
         statdir = statdir[0]
-        vmaf = np.mean(pd.read_csv(statdir + '/psnr_ssim_vmaf.csv')['vmaf'])
+        vmaf = np.mean(pd.read_csv(statdir + '/psnr_ssim_vmaf.csv')['psnr'])
         with open(statdir + '/vid_opts.json') as f:
             vid_opts = json.load(f)
             # add sanity checks
@@ -114,10 +114,10 @@ ax = plt.gca()
 df_results = pd.DataFrame.from_dict(Bunny_vmaf_diff, orient='index')
 boxplot_results = df_results.plot.bar(ax=ax,rot=0)
 ax.set_xlabel('Video')
-ax.set_ylabel(r'$vmaf_{var} - vmaf_{x}$')
+ax.set_ylabel(r'$psnr_{var} - psnr_{x}$')
 ax.legend(loc='center')
 plt.tight_layout() 
-plt.savefig('vmaf_diff.png')
+plt.savefig('psnr_diff.png')
 plt.close()
 
 ax = plt.gca()
